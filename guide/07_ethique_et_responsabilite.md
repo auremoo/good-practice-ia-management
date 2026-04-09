@@ -294,4 +294,4 @@ L'IA ne fera pas de vous un meilleur développeur automatiquement. Mais utilisé
 
 ---
 
-*Retour au [sommaire](README.md)*
+*Retour au [sommaire](../README.md)*

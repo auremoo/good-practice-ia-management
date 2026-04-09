@@ -12,7 +12,7 @@ Ce chapitre couvre en profondeur les mécanismes de configuration de Claude Code
 
 ### Rappel
 
-Le chapitre 8 fournit un **template prêt à l'emploi** ([CLAUDE_TEMPLATE_BONNES_PRATIQUES.md](templates/CLAUDE_TEMPLATE_BONNES_PRATIQUES.md)) qui couvre les garde-fous comportementaux : reformulation, questions avant exécution, détection des demandes vagues. Ce chapitre se concentre sur **comment aller plus loin** en adaptant le CLAUDE.md au contexte technique de chaque projet.
+Le chapitre 8 fournit un **template prêt à l'emploi** ([CLAUDE_TEMPLATE_BONNES_PRATIQUES.md](../templates/CLAUDE_TEMPLATE_BONNES_PRATIQUES.md)) qui couvre les garde-fous comportementaux : reformulation, questions avant exécution, détection des demandes vagues. Ce chapitre se concentre sur **comment aller plus loin** en adaptant le CLAUDE.md au contexte technique de chaque projet.
 
 ### La hiérarchie des fichiers CLAUDE.md
 
@@ -858,4 +858,4 @@ mon-projet/
 
 ---
 
-*Chapitre précédent : [Annexe — Mise en pratique automatisée](08_annexe_mise_en_pratique.md) | Retour au [sommaire](README.md)*
+*Chapitre précédent : [Annexe — Mise en pratique automatisée](08_annexe_mise_en_pratique.md) | Retour au [sommaire](../README.md)*

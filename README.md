@@ -12,16 +12,16 @@ L'IA générative est un outil puissant. Comme tout outil puissant, son efficaci
 
 | # | Chapitre | Description |
 |---|---------|-------------|
-| 0 | [Introduction](00_introduction.md) | Pourquoi ce guide existe et comment l'utiliser |
-| 1 | [Mindset — L'esprit critique avant tout](01_mindset_esprit_critique.md) | Posture professionnelle face à l'IA |
-| 2 | [L'art du prompt](02_art_du_prompt.md) | Communiquer efficacement avec une IA |
-| 3 | [Workflows concrets pour développeurs](03_workflows_developpeurs.md) | Cas d'usage pratiques au quotidien |
-| 4 | [Les pièges classiques](04_pieges_classiques.md) | Erreurs fréquentes et comment les éviter |
-| 5 | [Travailler avec un agent IA](05_travailler_avec_un_agent.md) | Sessions de travail avec Claude Code et outils similaires |
-| 6 | [Revue et validation](06_revue_et_validation.md) | Processus de contrôle du code assisté par IA |
-| 7 | [Éthique et responsabilité](07_ethique_et_responsabilite.md) | Cadre déontologique et juridique |
-| 8 | [Annexe — Mise en pratique automatisée](08_annexe_mise_en_pratique.md) | Template CLAUDE.md, garde-fous automatiques |
-| 9 | [Configurer son environnement IA](09_configurer_environnement_ia.md) | CLAUDE.md avancé, hooks, skills, mémoire, permissions |
+| 0 | [Introduction](guide/00_introduction.md) | Pourquoi ce guide existe et comment l'utiliser |
+| 1 | [Mindset — L'esprit critique avant tout](guide/01_mindset_esprit_critique.md) | Posture professionnelle face à l'IA |
+| 2 | [L'art du prompt](guide/02_art_du_prompt.md) | Communiquer efficacement avec une IA |
+| 3 | [Workflows concrets pour développeurs](guide/03_workflows_developpeurs.md) | Cas d'usage pratiques au quotidien |
+| 4 | [Les pièges classiques](guide/04_pieges_classiques.md) | Erreurs fréquentes et comment les éviter |
+| 5 | [Travailler avec un agent IA](guide/05_travailler_avec_un_agent.md) | Sessions de travail avec Claude Code et outils similaires |
+| 6 | [Revue et validation](guide/06_revue_et_validation.md) | Processus de contrôle du code assisté par IA |
+| 7 | [Éthique et responsabilité](guide/07_ethique_et_responsabilite.md) | Cadre déontologique et juridique |
+| 8 | [Annexe — Mise en pratique automatisée](guide/08_annexe_mise_en_pratique.md) | Template CLAUDE.md, garde-fous automatiques |
+| 9 | [Configurer son environnement IA](guide/09_configurer_environnement_ia.md) | CLAUDE.md avancé, hooks, skills, mémoire, permissions |
 
 ### Ressources
 

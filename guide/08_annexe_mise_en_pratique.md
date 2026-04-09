@@ -272,4 +272,4 @@ Le CLAUDE.md est comparable à un `.editorconfig` ou un `eslintrc` : il automati
 
 ---
 
-*Chapitre précédent : [Éthique et responsabilité](07_ethique_et_responsabilite.md) | Retour au [sommaire](README.md)*
+*Chapitre précédent : [Éthique et responsabilité](07_ethique_et_responsabilite.md) | Retour au [sommaire](../README.md)*
