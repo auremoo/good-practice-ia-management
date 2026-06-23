@@ -1,3 +1,5 @@
+<!-- good-practice-ia-management — Auteur : Aurélien Moote - Moo - 2026 — Licence MIT -->
+
 # Cheat Sheet — IA & Développement : les bonnes pratiques
 
 > À imprimer, afficher, garder sous la main.

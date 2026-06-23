@@ -1,3 +1,8 @@
+<!-- good-practice-ia-management — Auteur : Aurélien Moote - Moo - 2026 — Licence MIT -->
+
+> Créé par Aurélien Moote - Moo - 2026. Logiciel libre (licence MIT) :
+> réutilisable à condition de conserver la mention de l'auteur.
+
 # Guide des bonnes pratiques — Utilisation de l'IA dans le développement logiciel
 
 ## Objectif
@@ -45,3 +50,13 @@ Ce guide s'adresse à l'ensemble des profils techniques — développeurs junior
 ---
 
 *Dernière mise à jour : Avril 2026*
+
+---
+
+## Auteur & licence
+
+**Aurélien Moote - Moo - 2026**
+Copyright (c) 2026 Aurélien Moote ("Moo") — Licence MIT
+
+Ce projet est libre et réutilisable à condition de conserver la mention de l'auteur.
+Voir le fichier [LICENSE](LICENSE) pour les détails.
