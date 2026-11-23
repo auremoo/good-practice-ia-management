@@ -53,8 +53,7 @@ footer: "Chapitre 6 — Revue et validation"
 - [ ] Pas de **secrets en dur**
 
 ### Niveau 5 — Intégration
-- [ ] Tests existants **passent**
-- [ ] Nouveaux tests **ajoutés**
+- [ ] Tests existants **passent**, nouveaux tests **ajoutés**
 
 ---
 

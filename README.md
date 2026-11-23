@@ -34,6 +34,7 @@ L'IA générative est un outil puissant. Comme tout outil puissant, son efficaci
 |---------|-------------|
 | [Cheat Sheet](CHEAT_SHEET.md) | Résumé d'une page — à imprimer et garder sous la main |
 | [Template CLAUDE.md](templates/CLAUDE_TEMPLATE_BONNES_PRATIQUES.md) | Template prêt à l'emploi pour configurer Claude Code avec les bonnes pratiques |
+| [Slides de formation](slides/README.md) | Support de présentation Marp — 9 modules, environ 1h40 |
 
 ---
 
@@ -49,7 +50,7 @@ Ce guide s'adresse à l'ensemble des profils techniques — développeurs junior
 
 ---
 
-*Dernière mise à jour : Avril 2026*
+*Dernière mise à jour : Novembre 2026*
 
 ---
 

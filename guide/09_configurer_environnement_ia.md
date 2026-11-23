@@ -206,16 +206,18 @@ Les chemins sont relatifs à l'emplacement du fichier CLAUDE.md.
 
 Un hook est un **script qui s'exécute automatiquement** en réponse à un événement dans Claude Code. C'est l'équivalent des git hooks, mais pour l'agent IA.
 
-### Les événements disponibles
+### Les principaux événements
 
 | Événement | Quand il se déclenche | Bloquant ? | Cas d'usage |
 |-----------|----------------------|------------|-------------|
 | `SessionStart` | Début ou reprise de session | Non | Charger des variables d'environnement, notification |
 | `UserPromptSubmit` | Avant que Claude traite la demande de l'utilisateur | Oui | Valider le prompt, ajouter du contexte |
 | `PreToolUse` | Avant l'exécution d'un outil (Bash, Edit, Write...) | Oui | Bloquer des commandes dangereuses, vérifier les fichiers |
-| `PostToolUse` | Après exécution réussie d'un outil | Oui | Lint automatique, notification |
+| `PostToolUse` | Après exécution réussie d'un outil | Non (l'outil a déjà tourné), mais peut renvoyer un retour à Claude | Lint automatique, notification |
 | `Stop` | Quand Claude finit de répondre | Oui | Vérification finale, rapport |
 | `FileChanged` | Un fichier surveillé change sur disque | Non | Recharger des variables d'environnement |
+
+La liste complète des événements figure dans la documentation officielle de Claude Code.
 
 ### Configuration
 
@@ -263,6 +265,13 @@ Ce hook empêche l'agent d'exécuter des commandes `rm -rf`, `drop table`, ou `g
 **`.claude/hooks/block-destructive.sh`** :
 ```bash
 #!/bin/bash
+# Sans jq, la commande ne peut pas être lue : on bloque (exit 2) plutôt que
+# de tout laisser passer en silence.
+if ! command -v jq >/dev/null 2>&1; then
+  echo "block-destructive.sh : jq est introuvable, vérification impossible. Installez jq." >&2
+  exit 2
+fi
+
 # Lit l'entrée JSON depuis stdin
 INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command')
@@ -276,7 +285,6 @@ DANGEROUS_PATTERNS=(
   "git push -f"
   "git reset --hard"
   "truncate table"
-  "> /dev/null"
 )
 
 for pattern in "${DANGEROUS_PATTERNS[@]}"; do
@@ -295,6 +303,8 @@ done
 # Commande autorisée
 exit 0
 ```
+
+> **Prérequis** : ces scripts utilisent `jq`, qui n'est pas installé par défaut partout (il est notamment absent de Git Bash sous Windows). Installez-le via votre gestionnaire de paquets (winget, brew, apt) et documentez ce prérequis pour l'équipe. Un hook de sécurité doit échouer en bloquant, jamais en laissant passer : c'est le rôle du test en tête de script.
 
 ### Exemple 2 — Lint automatique après modification
 
@@ -359,7 +369,7 @@ Utiliser le LLM lui-même pour vérifier qu'un fichier modifié ne contient pas 
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Le fichier suivant vient d'être modifié. Vérifie s'il contient des secrets en dur (clés API, mots de passe, tokens, chaînes de connexion). Réponds UNIQUEMENT 'OK' si rien trouvé, ou 'ALERTE: [description]' si un secret potentiel est détecté. Fichier: $ARGUMENTS",
+            "prompt": "Un fichier vient d'être modifié. Vérifie si la modification contient des secrets en dur (clés API, mots de passe, tokens, chaînes de connexion). Réponds uniquement en JSON : {\"ok\": true} si rien trouvé, ou {\"ok\": false, \"reason\": \"description du secret détecté\"} sinon. Modification : $ARGUMENTS",
             "timeout": 15
           }
         ]
@@ -368,6 +378,10 @@ Utiliser le LLM lui-même pour vérifier qu'un fichier modifié ne contient pas 
   }
 }
 ```
+
+`$ARGUMENTS` est remplacé par l'entrée JSON du hook (outil appelé, fichier, contenu). Le modèle doit répondre `{"ok": true}` ou `{"ok": false, "reason": "..."}` ; `timeout` s'exprime en secondes.
+
+> **Cohérence avec le chapitre 4** : ce hook est un filet supplémentaire, pas une validation. Il ne remplace ni un scanner de secrets déterministe (gitleaks, detect-secrets) ni la review humaine.
 
 ### Bonnes pratiques pour les hooks
 
@@ -438,7 +452,7 @@ allowed-tools: "Read Grep Glob"
 | `user-invocable` | L'utilisateur peut l'invoquer avec `/nom` | `true` / `false` |
 | `disable-model-invocation` | Empêche Claude de l'invoquer automatiquement | `true` / `false` |
 | `allowed-tools` | Outils pré-autorisés (pas de demande de permission) | Ex : `"Read Grep Bash(npm test)"` |
-| `model` | Modèle spécifique pour cette skill | Ex : `claude-sonnet-4-6` |
+| `model` | Modèle spécifique pour cette skill | Mêmes valeurs que `/model` (ex : `sonnet`), ou `inherit` |
 | `context` | Exécuter dans un sous-agent isolé | `fork` |
 
 ### Exemples de skills utiles pour une équipe
@@ -452,7 +466,7 @@ name: review
 description: Review de code avec checklist complète
 argument-hint: "[fichier ou dossier]"
 user-invocable: true
-allowed-tools: "Read Grep Glob"
+allowed-tools: "Read Grep Glob Bash(git diff *)"
 ---
 
 Effectue une review de code sur $ARGUMENTS.
@@ -611,7 +625,7 @@ Procède étape par étape. Après chaque étape :
 | Variable | Description |
 |----------|-------------|
 | `$ARGUMENTS` | Tous les arguments passés après le `/nom` |
-| `$1`, `$2`... | Arguments individuels par position |
+| `$0`, `$1`... | Arguments individuels par position, en partant de `$0` (équivalent : `$ARGUMENTS[0]`) |
 | `${CLAUDE_SKILL_DIR}` | Répertoire contenant le SKILL.md |
 | `${CLAUDE_SESSION_ID}` | Identifiant de la session |
 
@@ -655,7 +669,7 @@ La sortie des blocs `` ```! `` est exécutée **avant** que Claude voie le promp
 | **Qui écrit** | Vous (et l'équipe) | Claude, à votre demande ou de sa propre initiative |
 | **Contenu** | Instructions, conventions, interdits | Apprentissages, préférences, retours d'expérience |
 | **Portée** | Projet ou utilisateur | Par projet, par utilisateur |
-| **Chargement** | Intégral, à chaque session | Index chargé (200 lignes max), fichiers lus à la demande |
+| **Chargement** | Intégral, à chaque session | Index chargé (200 premières lignes ou 25 Ko), fichiers lus à la demande |
 | **Usage** | Règles à suivre | Contexte pour mieux travailler |
 
 ### Où est stockée la mémoire
@@ -685,7 +699,7 @@ Le `MEMORY.md` est un index de pointeurs vers les fichiers thématiques. Seul l'
 #### Corriger et mémoriser
 
 ```
-« Non, on ne mocker jamais la base dans les tests d'intégration — 
+« Non, on ne mocke jamais la base dans les tests d'intégration — 
   on utilise une instance PostgreSQL Testcontainers. 
   Retiens ça pour les prochaines fois. »
 ```
@@ -716,7 +730,7 @@ Accès direct via la commande `/memory` dans Claude Code.
 
 ### Le système de permissions
 
-En l'absence de fichier `.claudeignore` natif, Claude Code utilise un système de **règles de permission** pour contrôler l'accès aux fichiers et aux commandes.
+Claude Code ne reconnaît pas de fichier `.claudeignore` (s'il en existe un, il est sans effet). L'accès aux fichiers et aux commandes se contrôle par un système de **règles de permission**.
 
 ### Configuration des restrictions
 
@@ -732,13 +746,9 @@ En l'absence de fichier `.claudeignore` natif, Claude Code utilise un système d
       "Read(**/*.pfx)",
       "Read(**/credentials/**)",
       "Read(**/secrets/**)",
-      "Edit(.env*)",
-      "Write(.env*)",
       "Bash(rm -rf *)",
       "Bash(git push --force*)",
-      "Bash(git reset --hard*)",
-      "Bash(drop table*)",
-      "Bash(drop database*)"
+      "Bash(git reset --hard*)"
     ],
     "allow": [
       "Read(src/**)",
@@ -754,6 +764,13 @@ En l'absence de fichier `.claudeignore` natif, Claude Code utilise un système d
   }
 }
 ```
+
+**Comment lire ces règles** :
+
+- Une règle `Read(...)` en `deny` bloque aussi la modification (Edit, Write) du même chemin : inutile de la dupliquer.
+- Dans une règle `Bash(...)`, `*` remplace n'importe quel texte, à n'importe quelle position. La règle porte sur la commande shell : `Bash(drop table*)` ne bloquerait rien, car le SQL est toujours passé en argument d'un client (`psql -c "DROP TABLE..."`). D'où les patterns `Bash(*DROP*)` ci-dessous.
+
+> **Limite à connaître** : ces règles sont un filet de sécurité, pas une barrière étanche. Les règles `Read` s'appliquent aux outils de fichiers de l'agent, et les patterns `Bash` qui filtrent sur les arguments sont contournables (une même action peut s'écrire de multiples façons). Pour un cloisonnement strict, gardez les secrets hors du répertoire de travail et combinez permissions, hooks et sandboxing.
 
 ### Patterns de restriction recommandés par type de projet
 
@@ -836,14 +853,14 @@ mon-projet/
 
 | Fonctionnalité | Claude Code | Cursor | GitHub Copilot | ChatGPT |
 |---------------|-------------|--------|----------------|---------|
-| Instructions projet | `CLAUDE.md` | `.cursorrules` | `.github/copilot-instructions.md` | Custom Instructions |
-| Instructions perso | `~/.claude/CLAUDE.md` | Settings Cursor | Settings VS Code | Custom Instructions |
-| Hooks | `settings.json` hooks | Non disponible | Non disponible | Non disponible |
-| Skills / commandes | `.claude/skills/` | Non disponible | Non disponible | GPTs personnalisés |
-| Mémoire persistante | Mémoire automatique | Notepad (bêta) | Non disponible | Memory |
-| Exclusion de fichiers | Permissions deny | `.cursorignore` | Non disponible | N/A |
+| Instructions projet | `CLAUDE.md` | `.cursor/rules/` (ex-`.cursorrules`) | `.github/copilot-instructions.md` | Custom Instructions |
+| Instructions perso | `~/.claude/CLAUDE.md` | User Rules (réglages Cursor) | Settings VS Code | Custom Instructions |
+| Hooks | `.claude/settings.json` | `.cursor/hooks.json` | Hooks d'agent (support variable selon l'environnement) | Non disponible |
+| Skills / commandes | `.claude/skills/` | Commandes et skills | Prompt files (`.github/prompts/`), skills, agents personnalisés | GPTs personnalisés |
+| Mémoire persistante | Mémoire automatique | Memories | Variable selon l'offre | Memory |
+| Exclusion de fichiers | Permissions `deny` | `.cursorignore` | Content exclusion (offres Business / Enterprise) | N/A |
 
-> **Constat** : à date, Claude Code est l'outil le plus configurable. Mais les principes (donner du contexte, poser des garde-fous, créer des workflows réutilisables) s'appliquent quel que soit l'outil, avec les moyens disponibles.
+> **Constat** : les outils convergent vers les mêmes briques (instructions de projet, hooks, skills, mémoire) et évoluent vite : ce tableau reflète l'état de novembre 2026, vérifiez la documentation officielle de votre outil avant de configurer. Les principes, eux, ne changent pas : donner du contexte, poser des garde-fous, créer des workflows réutilisables.
 
 ---
 

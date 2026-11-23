@@ -111,7 +111,7 @@ Dans le flux du travail, il est tentant de coller du code tel quel dans un chatb
 |-------|----------------|--------|
 | **ChatGPT (version gratuite)** | Élevé | Les données peuvent être utilisées pour l'entraînement |
 | **ChatGPT Team / Enterprise** | Modéré | Pas d'entraînement, mais stockage sur serveurs tiers |
-| **Claude Code (CLI local)** | Faible | Le code reste sur votre machine, l'IA lit localement |
+| **Claude Code (offre API / Team / Enterprise)** | Faible | L'agent s'exécute sur votre machine, mais le contenu des fichiers qu'il lit est envoyé à l'API du fournisseur ; pas d'entraînement sur votre code avec ces offres |
 | **GitHub Copilot Business** | Faible | Politique de non-rétention, pas d'entraînement sur votre code |
 | **Solution on-premise / self-hosted** | Très faible | Rien ne quitte votre infrastructure |
 
@@ -133,7 +133,7 @@ Dans le flux du travail, il est tentant de coller du code tel quel dans un chatb
 
 3. **Vérifier les fichiers avant de les soumettre à un agent.** Un agent comme Claude Code accède à tout le répertoire de travail. Assurez-vous que les fichiers `.env`, les certificats et les credentials ne sont pas dans le périmètre.
 
-4. **Utiliser un `.gitignore` et un `.claudeignore`** (ou équivalent) pour exclure les fichiers sensibles du périmètre de l'agent.
+4. **Exclure les fichiers sensibles du périmètre de l'agent** avec le mécanisme d'exclusion de votre outil : règles `deny` dans `.claude/settings.json` pour Claude Code (voir [chapitre 9](09_configurer_environnement_ia.md)), `.cursorignore` pour Cursor, etc. Un `.gitignore` seul ne suffit pas : il protège le dépôt, pas la lecture par l'agent.
 
 5. **En cas de doute, demander au responsable sécurité** de votre organisation avant d'utiliser un outil IA sur un projet sensible.
 

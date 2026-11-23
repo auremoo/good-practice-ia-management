@@ -275,7 +275,7 @@ Date : ____________     Signature : ____________
 
 ---
 
-*Chapitre précédent : [Revue et validation](06_revue_et_validation.md)*
+*Chapitre précédent : [Revue et validation](06_revue_et_validation.md) | Chapitre suivant : [Annexe — Mise en pratique automatisée](08_annexe_mise_en_pratique.md)*
 
 ---
 

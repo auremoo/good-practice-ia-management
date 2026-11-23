@@ -17,13 +17,13 @@ Ce guide est né d'un constat simple : **la qualité du travail assisté par IA 
 
 ## Ce que ce guide n'est pas
 
-- Un tutoriel technique sur l'installation ou la configuration d'outils.
+- Un tutoriel d'installation d'outils. Seuls les chapitres 8 et 9 entrent dans la configuration concrète (celle de Claude Code), parce qu'elle sert à automatiser les bonnes pratiques décrites dans les chapitres précédents.
 - Un argumentaire pour ou contre l'utilisation de l'IA.
 - Une liste figée de règles. Les pratiques évoluent rapidement ; ce guide doit être mis à jour régulièrement.
 
 ## Le problème que nous adressons
 
-L'utilisation naive de l'IA dans le développement logiciel engendre des risques concrets :
+L'utilisation naïve de l'IA dans le développement logiciel engendre des risques concrets :
 
 | Risque | Conséquence |
 |--------|-------------|

@@ -3,14 +3,16 @@ marp: true
 theme: corporate-ia
 paginate: true
 header: "Guide IA & Développement"
-footer: "Chapitre 8 — Configuration"
+footer: "Chapitres 8 et 9 — Configuration"
 ---
 
 <!-- _class: lead -->
 
-# Chapitre 8 — Configurer son environnement IA
+# Configurer son environnement IA
 
-### CLAUDE.md, hooks, skills, mémoire
+## Chapitres 8 et 9 du guide
+
+### CLAUDE.md, hooks, skills, mémoire, permissions
 
 ---
 
@@ -46,13 +48,12 @@ Tous les niveaux sont **concaténés**, pas écrasés.
 
 ```markdown
 # Stack : .NET 8, EF Core 8, PostgreSQL
-# Architecture : Clean Architecture
-# Tests : xUnit + Moq
+# Architecture : Clean Architecture — Tests : xUnit + Moq
 
 # Conventions
 - PascalCase classes/méthodes, camelCase variables
 - Règles métier dans Domain, jamais dans Controllers
-- Tests nommés : Devrait_[résultat]_Quand_[condition]
+- Tests nommés : `Devrait_[résultat]_Quand_[condition]`
 
 # Commandes
 - dotnet test → lancer les tests
@@ -94,10 +95,9 @@ Un hook = un script qui s'exécute **automatiquement** sur un événement.
 
 ---
 
-# Hooks — Exemple : bloquer les commandes destructives
+# Hooks — Bloquer les commandes destructives
 
 ```json
-// .claude/settings.json
 {
   "hooks": {
     "PreToolUse": [{
@@ -111,8 +111,7 @@ Un hook = un script qui s'exécute **automatiquement** sur un événement.
 }
 ```
 
-Le script vérifie si la commande contient `rm -rf`, `DROP TABLE`, `git push --force`...
-→ Si oui : **bloqué automatiquement**.
+Dans `.claude/settings.json`. Le script lit la commande et la **bloque** si elle contient `rm -rf`, `DROP TABLE`, `git push --force`...
 
 ---
 
@@ -184,13 +183,13 @@ Utilisation : `/review src/services/PaymentService.ts`
       "Read(**/*.pem)",
       "Bash(rm -rf *)",
       "Bash(git push --force*)",
-      "Bash(DROP TABLE*)"
+      "Bash(*DROP TABLE*)"
     ]
   }
 }
 ```
 
-L'agent ne pourra **ni lire** les secrets, **ni exécuter** de commandes destructives.
+Un **filet de sécurité**, pas une barrière absolue : à combiner avec les hooks et la review.
 
 ---
 
@@ -221,11 +220,13 @@ comme il porte son `.eslintrc`.
 
 | Fonctionnalité | Claude Code | Cursor | Copilot |
 |---------------|-------------|--------|---------|
-| Instructions projet | `CLAUDE.md` | `.cursorrules` | `.github/copilot-instructions.md` |
-| Hooks | `settings.json` | — | — |
-| Skills | `.claude/skills/` | — | — |
-| Mémoire | Auto memory | Notepad (bêta) | — |
-| Exclusion fichiers | Permissions deny | `.cursorignore` | — |
+| Instructions projet | `CLAUDE.md` | `.cursor/rules/` | `.github/copilot-instructions.md` |
+| Hooks | `.claude/settings.json` | `.cursor/hooks.json` | Hooks d'agent |
+| Skills / commandes | `.claude/skills/` | Commandes, skills | `.github/prompts/`, skills |
+| Mémoire | Mémoire automatique | Memories | Selon l'offre |
+| Exclusion fichiers | Permissions `deny` | `.cursorignore` | Content exclusion |
+
+Les outils convergent et évoluent vite : **vérifiez la doc officielle** avant de configurer.
 
 ---
 

@@ -104,12 +104,12 @@ Pour ajuster le niveau, modifiez la section « Analyse de la demande avant exéc
 
 ## 8.3 — Équivalents pour les autres outils
 
-### Cursor — `.cursorrules`
+### Cursor — règles de projet
 
-Cursor utilise un fichier `.cursorrules` à la racine du projet. Le même principe s'applique :
+Cursor lit des fichiers de règles placés dans `.cursor/rules/` (l'ancien fichier unique `.cursorrules` à la racine reste reconnu, mais il est déprécié). Le même principe s'applique :
 
 ```markdown
-# .cursorrules
+# .cursor/rules/comportement.mdc
 
 ## Comportement
 
@@ -141,7 +141,7 @@ non demandés. Si le contexte est insuffisant, génère un commentaire
 TODO plutôt qu'une implémentation devinée.
 ```
 
-> **Limitation** : Copilot étant un outil de complétion inline, le contrôle comportemental est moins fin qu'avec un agent conversationnel. Les instructions influencent la complétion mais ne permettent pas de poser des questions à l'utilisateur.
+> **Limitation** : en complétion inline, le contrôle comportemental est moins fin qu'avec un agent conversationnel. Les instructions influencent la suggestion mais ne permettent pas de poser des questions à l'utilisateur ; ce comportement n'est possible qu'en mode chat ou agent.
 
 ### ChatGPT — Custom Instructions ou GPTs
 
@@ -175,41 +175,50 @@ Ce mécanisme transforme chaque correction en amélioration durable. L'agent app
 
 ### Les hooks : garde-fous techniques
 
-Claude Code permet de configurer des hooks — des scripts exécutés automatiquement à certains moments. Bien que limités à des scripts shell (pas d'analyse IA), ils peuvent servir de garde-fous techniques :
+Claude Code permet de configurer des hooks — des traitements exécutés automatiquement à certains moments (avant ou après l'utilisation d'un outil, à la soumission d'un prompt, etc.). Les plus simples sont des scripts shell, et servent de garde-fous techniques :
 
-**Exemple : hook pre-commit pour vérifier les fichiers sensibles**
+**Exemple : hook vérifiant l'absence de secrets avant toute écriture de fichier**
 
 Dans le fichier `.claude/settings.json` :
 
 ```json
 {
   "hooks": {
-    "pre-tool-use": [
+    "PreToolUse": [
       {
         "matcher": "Edit|Write",
-        "command": "bash scripts/check-no-secrets.sh $FILE_PATH"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-no-secrets.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
 
-Avec un script `check-no-secrets.sh` qui vérifie qu'un fichier modifié ne contient pas de patterns de secrets (clés API, tokens, mots de passe).
+Le script `check-no-secrets.sh` reçoit la description de l'action au format JSON sur son entrée standard (fichier ciblé, contenu à écrire) et peut la bloquer si elle contient des patterns de secrets (clés API, tokens, mots de passe). Le [chapitre 9](09_configurer_environnement_ia.md) détaille le format et donne des scripts complets.
 
-### Le fichier `.claudeignore`
+### Les permissions : exclure les fichiers sensibles
 
-Pour empêcher l'agent d'accéder à des fichiers sensibles :
+Claude Code ne reconnaît pas de fichier `.claudeignore`. Pour empêcher l'agent d'accéder à des fichiers sensibles, on déclare des règles `deny` dans `.claude/settings.json` :
 
-```
-# .claudeignore
-.env
-.env.*
-**/secrets/**
-**/credentials/**
-*.pem
-*.key
-*.pfx
-docker-compose.override.yml
+```json
+{
+  "permissions": {
+    "deny": [
+      "Read(.env*)",
+      "Read(**/secrets/**)",
+      "Read(**/credentials/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.pfx)",
+      "Read(**/docker-compose.override.yml)"
+    ]
+  }
+}
 ```
 
 ---
@@ -265,11 +274,11 @@ Le CLAUDE.md est comparable à un `.editorconfig` ou un `eslintrc` : il automati
 
 1. **Le CLAUDE.md est le levier le plus efficace** pour automatiser les bonnes pratiques avec Claude Code.
 2. **Le template fourni est un point de départ**, à adapter au contexte de chaque projet et équipe.
-3. **Des équivalents existent** pour Cursor (`.cursorrules`), Copilot (`copilot-instructions.md`), et ChatGPT (Custom Instructions).
-4. **Les mécanismes sont complémentaires** : CLAUDE.md + mémoire + .claudeignore forment un ensemble cohérent.
+3. **Des équivalents existent** pour Cursor (`.cursor/rules/`), Copilot (`copilot-instructions.md`), et ChatGPT (Custom Instructions).
+4. **Les mécanismes sont complémentaires** : CLAUDE.md + mémoire + hooks + permissions forment un ensemble cohérent.
 5. **Mesurez et itérez** : le template est un document vivant qui s'améliore avec l'usage.
 6. **Aucun outil ne remplace la formation.** Le template est un filet de sécurité, pas un substitut.
 
 ---
 
-*Chapitre précédent : [Éthique et responsabilité](07_ethique_et_responsabilite.md) | Retour au [sommaire](../README.md)*
+*Chapitre précédent : [Éthique et responsabilité](07_ethique_et_responsabilite.md) | Chapitre suivant : [Configurer son environnement IA](09_configurer_environnement_ia.md) | Retour au [sommaire](../README.md)*

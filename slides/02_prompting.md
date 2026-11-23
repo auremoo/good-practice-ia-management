@@ -128,28 +128,27 @@ logger.Information("Payment processed for Order {OrderId}...");
 
 ### Donner un contre-exemple
 ```
-Ce que je ne veux PAS :
-- Commentaires sur chaque ligne
-- 10 micro-fonctions
-- Design patterns superflus
+Ce que je ne veux PAS : commentaires sur chaque ligne,
+10 micro-fonctions, design patterns superflus.
 ```
 
 ### Demander de raisonner d'abord
 ```
-Avant de coder : quelles approches possibles ?
-Avantages/inconvénients de chacune ?
-Puis implémente la meilleure.
+Avant de coder : quelles approches possibles,
+avec quels avantages/inconvénients ? Puis implémente la meilleure.
 ```
 
 ---
 
-# Adapter le prompt à l'outil
+# Adapter le prompt au mode d'utilisation
 
-| Outil | Stratégie |
-|-------|-----------|
-| **Claude Code / Agent** | Intentions de haut niveau. L'agent explore le code lui-même. |
-| **GitHub Copilot** | Commentaires descriptifs dans le code pour guider la complétion. |
-| **ChatGPT / Chat web** | Tout fournir dans le prompt (code, erreur, contexte). |
+| Mode | Stratégie |
+|------|-----------|
+| **Agent** (Claude Code, Cursor, Copilot agent) | Intentions de haut niveau. L'agent explore le code lui-même. |
+| **Complétion inline** (Copilot, Cursor) | Commentaires descriptifs dans le code pour guider la complétion. |
+| **Chat web** (ChatGPT, Claude.ai) | Tout fournir dans le prompt (code, erreur, contexte). |
+
+Un même outil propose souvent plusieurs modes : c'est le **mode** qui dicte le prompt.
 
 ---
 
@@ -175,7 +174,7 @@ Il en explorera d'autres si nécessaire.
 1. **CROP** : Contexte, Résultat, Objectif, Précisions
 2. **Soyez spécifique** — plus c'est précis, plus c'est exploitable
 3. **Itérez** — le prompting est un dialogue
-4. **Adaptez-vous à l'outil** — agent ≠ chatbot
+4. **Adaptez-vous au mode** — agent ≠ complétion ≠ chatbot
 5. **Montrez** plutôt que décrivez — exemples > explications
 6. **Découpez** — une séquence ciblée bat un méga-prompt
 

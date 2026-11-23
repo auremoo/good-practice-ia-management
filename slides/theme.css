@@ -98,6 +98,9 @@ blockquote strong {
 /* ── Tableaux ── */
 
 table {
+  /* Le thème par défaut passe les tableaux en display:block : les colonnes
+     ne s'étirent alors pas sur la largeur du cadre (ombre + coins arrondis). */
+  display: table;
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -151,6 +154,28 @@ pre {
   line-height: 1.5;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin: 0.8em 0;
+
+  /* Coloration syntaxique : le thème par défaut fournit des couleurs prévues
+     pour un fond clair, illisibles sur ce fond sombre. On les redéfinit ici. */
+  --color-prettylights-syntax-comment: #94a3b8;
+  --color-prettylights-syntax-constant: #79c0ff;
+  --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+  --color-prettylights-syntax-entity: #d2a8ff;
+  --color-prettylights-syntax-entity-tag: #7ee787;
+  --color-prettylights-syntax-keyword: #ff7b72;
+  --color-prettylights-syntax-string: #a5d6ff;
+  --color-prettylights-syntax-string-regexp: #7ee787;
+  --color-prettylights-syntax-variable: #ffa657;
+  --color-prettylights-syntax-storage-modifier-import: #e2e8f0;
+  --color-prettylights-syntax-markup-heading: #93c5fd;
+  --color-prettylights-syntax-markup-list: #fbbf24;
+  --color-prettylights-syntax-markup-bold: #f1f5f9;
+  --color-prettylights-syntax-markup-italic: #f1f5f9;
+  --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+  --color-prettylights-syntax-markup-inserted-bg: #033a16;
+  --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+  --color-prettylights-syntax-markup-deleted-bg: #67060c;
+  --color-prettylights-syntax-brackethighlighter-angle: #94a3b8;
 }
 
 pre code {
@@ -294,4 +319,25 @@ section.end blockquote {
 
 section.end blockquote strong {
   color: #ffffff;
+}
+
+/* ── Fonds sombres (lead / end) : contraste du texte secondaire ── */
+
+section.lead header,
+section.lead footer,
+section.lead::after,
+section.end header,
+section.end footer,
+section.end::after {
+  color: #cbd5e1;
+}
+
+section.lead strong,
+section.end strong {
+  color: #ffffff;
+}
+
+section.lead em,
+section.end em {
+  color: #cbd5e1;
 }

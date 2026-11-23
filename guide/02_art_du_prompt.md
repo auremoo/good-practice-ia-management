@@ -216,7 +216,7 @@ Pour les problèmes complexes, demander à l'IA de structurer sa réflexion avan
   les allocations mémoire inutiles, et les appels réseau non optimisés. »
 ```
 
-> **Note sur les outils spécifiques** : Dans Claude Code, le persona peut être défini de manière persistante via le fichier `CLAUDE.md` à la racine du projet. Cette approche évite de répéter le contexte à chaque session. D'autres outils comme Cursor utilisent des fichiers `.cursorrules` pour un effet similaire.
+> **Note sur les outils spécifiques** : Dans Claude Code, le persona peut être défini de manière persistante via le fichier `CLAUDE.md` à la racine du projet. Cette approche évite de répéter le contexte à chaque session. D'autres outils comme Cursor utilisent des fichiers de règles (`.cursor/rules/`) pour un effet similaire.
 
 ---
 
@@ -270,25 +270,27 @@ Au sein d'une session de travail, l'agent se souvient des échanges précédents
 
 ---
 
-## 2.6 — Comparatif des approches selon les outils
+## 2.6 — Comparatif des approches selon le mode d'utilisation
 
-| Aspect | Claude Code / Agent CLI | GitHub Copilot | ChatGPT / Chat web |
+Un même outil propose souvent plusieurs modes : GitHub Copilot ou Cursor, par exemple, offrent à la fois la complétion inline, un chat et un mode agent. C'est le mode, plus que la marque, qui détermine la bonne façon de prompter.
+
+| Aspect | Agent (Claude Code, Cursor, Copilot en mode agent) | Complétion inline (Copilot, Cursor) | Chat web (ChatGPT, Claude.ai) |
 |--------|------------------------|----------------|---------------------|
 | Contexte | Accès complet au projet | Fichier ouvert + voisins | Aucun (copier-coller) |
 | Action | Peut modifier les fichiers, lancer des commandes | Suggestion inline | Génère du texte à copier |
 | Mémoire de session | Oui, dans la session | Limitée au fichier courant | Oui, dans la conversation |
-| Mémoire inter-session | Oui (CLAUDE.md, mémoire) | Non | Limitée |
+| Mémoire inter-session | Oui (fichiers d'instructions, mémoire) | Non, hors fichiers d'instructions du projet | Limitée |
 | Prompting optimal | Intentions de haut niveau, contexte métier | Court, inline, complétion | Détaillé, auto-suffisant |
 
-### Adapter le prompt à l'outil
+### Adapter le prompt au mode
 
-**Claude Code** — Privilégier les intentions de haut niveau. L'agent explorera le code lui-même.
+**Agent (Claude Code, Cursor, Copilot en mode agent)** — Privilégier les intentions de haut niveau. L'agent explorera le code lui-même.
 ```
 « Le test d'intégration sur le panier e-commerce échoue. 
   Diagnostique et corrige le problème. »
 ```
 
-**GitHub Copilot** — Privilégier les commentaires descriptifs dans le code qui guident la complétion.
+**Complétion inline (GitHub Copilot, Cursor)** — Privilégier les commentaires descriptifs dans le code qui guident la complétion.
 ```typescript
 // Calcule le prix total avec remise progressive :
 // - 5% au-delà de 10 unités
@@ -297,7 +299,7 @@ Au sein d'une session de travail, l'agent se souvient des échanges précédents
 function calculateTotalPrice(items: CartItem[]): number {
 ```
 
-**ChatGPT / Chat web** — Fournir tout le contexte dans le prompt, puisque l'outil n'a pas accès au code.
+**Chat web (ChatGPT, Claude.ai)** — Fournir tout le contexte dans le prompt, puisque l'outil n'a pas accès au code.
 ```
 « J'ai une fonction TypeScript qui calcule un prix. 
   Voici le code : [coller]. 
@@ -313,7 +315,7 @@ function calculateTotalPrice(items: CartItem[]): number {
 1. **Structurez vos prompts** avec la méthode CROP : Contexte, Résultat, Objectif, Précisions.
 2. **Soyez spécifique.** Plus votre demande est précise, plus la réponse est exploitable.
 3. **Itérez.** Le prompting est un dialogue, pas une commande unique.
-4. **Adaptez-vous à l'outil.** Un agent n'a pas besoin du même prompt qu'un chatbot.
+4. **Adaptez-vous au mode d'utilisation.** Un agent n'a pas besoin du même prompt qu'une complétion inline ou qu'un chatbot.
 5. **Montrez plutôt que décrivez.** Exemples et contre-exemples valent mieux que de longues explications.
 6. **Découpez les problèmes complexes.** Une séquence de prompts ciblés bat toujours un méga-prompt.
 

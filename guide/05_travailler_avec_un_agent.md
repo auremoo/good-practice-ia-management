@@ -159,7 +159,7 @@ Base de données : PostgreSQL via Entity Framework Core.
 | Outil | Fichier de configuration |
 |-------|--------------------------|
 | Claude Code | `CLAUDE.md` |
-| Cursor | `.cursorrules` |
+| Cursor | Règles dans `.cursor/rules/` (l'ancien `.cursorrules` est déprécié) |
 | GitHub Copilot | Instructions dans les settings ou fichier `.github/copilot-instructions.md` |
 | Aider | `.aider.conf.yml` |
 
@@ -260,15 +260,21 @@ Claude Code fonctionne avec un système de permissions qui contrôle ce que l'ag
 ### Bonnes pratiques de sécurité
 
 1. **Ne pas accorder les permissions « tout accepter » sur un projet sensible.** Validez chaque modification sur les fichiers critiques.
-2. **Exclure les fichiers sensibles** via `.claudeignore` :
+2. **Exclure les fichiers sensibles** via des règles `deny` dans `.claude/settings.json` (Claude Code ne reconnaît pas de fichier `.claudeignore`) :
+   ```json
+   {
+     "permissions": {
+       "deny": [
+         "Read(.env*)",
+         "Read(**/credentials/**)",
+         "Read(**/secrets/**)",
+         "Read(**/*.pem)",
+         "Read(**/*.key)"
+       ]
+     }
+   }
    ```
-   .env
-   .env.*
-   **/credentials/**
-   **/secrets/**
-   *.pem
-   *.key
-   ```
+   Le [chapitre 9](09_configurer_environnement_ia.md) détaille ce mécanisme et ses limites.
 3. **Vérifier les commandes avant exécution.** L'agent peut proposer des commandes destructives (suppression de fichiers, reset de base de données). Lisez toujours ce qu'il s'apprête à exécuter.
 4. **Travailler sur une branche** pour isoler les modifications de l'agent.
 
